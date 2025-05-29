@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow Login/Signup</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary-blue: #007bff;
+            --dark-blue: #0056b3;
+            --light-blue: #e0f7fa;
+            --text-color: #333;
+            --white: #fff;
+            --glass-bg: rgba(255, 255, 255, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --gradient-start: #6dd5ed;
+            --gradient-end: #2193b0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            overflow: hidden; /* Hide overflow for wave effect */
+            position: relative;
+            color: var(--text-color);
+        }
+
+        /* Water wave effect */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px; /* Adjust height as needed */
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.4" d="M0,288L48,272C96,256,192,224,288,197.3C384,171,480,149,576,165.3C672,181,768,235,864,250.7C960,267,1056,245,1152,250.7C1248,256,1344,283,1392,298.7L1440,315L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') repeat-x;
+            animation: waveAnimation 15s linear infinite;
+            opacity: 0.6;
+            z-index: 1;
+        }
+
+        .wave.bottom {
+            bottom: 0;
+            opacity: 0.8;
+            animation: waveAnimation 20s linear infinite reverse;
+        }
+
+        .wave.top {
+            top: 0;
+            height: 80px;
+            opacity: 0.3;
+            animation: waveAnimation 25s linear infinite;
+        }
+
+        @keyframes waveAnimation {
+            0% {
+                background-position-x: 0;
+            }
+            100% {
+                background-position-x: 1440px; /* Width of the SVG */
+            }
+        }
+
+        .form-container {
+            background: var(--glass-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            z-index: 2; /* Ensure form is above waves */
+            overflow: hidden;
+        }
+
+        .form-container h2 {
+            margin-bottom: 30px;
+            color: var(--white);
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .form-toggle button {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.1em;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .form-toggle button::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-blue);
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease-out;
+        }
+
+        .form-toggle button.active {
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .form-toggle button.active::before {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group input {
+            width: calc(100% - 30px);
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1em;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group input:focus {
+            box-shadow: 0 0 0 3px var(--light-blue), inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group label {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #666;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: -10px;
+            left: 5px;
+            font-size: 0.8em;
+            color: var(--primary-blue);
+            background: var(--input-bg);
+            padding: 0 5px;
+            border-radius: 5px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--primary-blue), var(--dark-blue));
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+            margin-top: 20px;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.6);
+        }
+
+        .forgot-password {
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .forgot-password a {
+            color: var(--dark-blue);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+            color: var(--primary-blue);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .form-container h2 {
+                font-size: 1.8em;
+            }
+
+            .form-toggle button {
+                font-size: 1em;
+                padding: 8px 15px;
+            }
+
+            .input-group input {
+                padding: 10px 12px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wave top"></div>
+    <div class="wave bottom"></div>
+
+    <div class="form-container">
+        <h2>AquaFlow</h2>
+        <div class="form-toggle">
+            <button id="loginToggle" class="active">Login</button>
+            <button id="signupToggle">Sign Up</button>
+        </div>
+
+        <div id="loginForm" class="form-section active">
+            <form action="#" method="POST">
+                <div class="input-group">
+                    <input type="email" id="loginEmail" placeholder=" " required>
+                    <label for="loginEmail">Email</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="loginPassword" placeholder=" " required>
+                    <label for="loginPassword">Password</label>
+                </div>
+                <button type="submit" class="btn">Log In</button>
+            </form>
+            <div class="forgot-password">
+                <a href="#">Forgot Password?</a>
+            </div>
+        </div>
+
+        <div id="signupForm" class="form-section">
+            <form action="#" method="POST">
+                <div class="input-group">
+                    <input type="text" id="signupUsername" placeholder=" " required>
+                    <label for="signupUsername">Username</label>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="signupEmail" placeholder=" " required>
+                    <label for="signupEmail">Email</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="signupPassword" placeholder=" " required>
+                    <label for="signupPassword">Password</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="signupConfirmPassword" placeholder=" " required>
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                </div>
+                <button type="submit" class="btn">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const loginToggle = document.getElementById('loginToggle');
+        const signupToggle = document.getElementById('signupToggle');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+
+        loginToggle.addEventListener('click', () => {
+            loginToggle.classList.add('active');
+            signupToggle.classList.remove('active');
+            loginForm.classList.add('active');
+            signupForm.classList.remove('active');
+        });
+
+        signupToggle.addEventListener('click', () => {
+            signupToggle.classList.add('active');
+            loginToggle.classList.remove('active');
+            signupForm.classList.add('active');
+            loginForm.classList.remove('active');
+        });
+
+        // Add 'not(:placeholder-shown)' class for initial state if input has value
+        document.querySelectorAll('.input-group input').forEach(input => {
+            input.addEventListener('input', () => {
+                if (input.value.length > 0) {
+                    input.classList.add('has-value');
+                } else {
+                    input.classList.remove('has-value');
+                }
+            });
+            // Check on page load if input already has a value (e.g., from autofill)
+            if (input.value.length > 0) {
+                input.classList.add('has-value');
+            }
+        });
+    </script>
+</body>
+</html>
